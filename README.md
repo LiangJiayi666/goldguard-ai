@@ -16,7 +16,7 @@
 | 看/装**原版完整工程** | 见 `02_原版源码_完整工程/安装使用指南.pdf` 与 `02_原版源码_完整工程/README_原版安装与使用.md`（双击 `install.bat` 即可） |
 | 给公网 URL | 见 `docs/06_部署与公网URL说明.md`（Docker 一行命令，或 Render/Railway 免费部署） |
 | 看产品设计 / AI 记录 / 测试 / 合规 | `docs/` 目录，或 `00_提交说明.md` |
-| 看源码仓库 | GitHub 仓库：`https://github.com/____/____`（提交前请把本行替换为实际仓库地址） |
+| 看源码仓库 | GitHub：<https://github.com/LiangJiayi666/goldguard-ai> |
 
 > 本包同时提供**两份东西**：
 > 1. **`01_可运行Web产品_离线演示/`（“阉割版”/ 离线演示）**：评委 30 秒内可操作、可复现的 Web 产品；
