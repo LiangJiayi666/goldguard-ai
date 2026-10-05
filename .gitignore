@@ -1,0 +1,20 @@
+# 密钥 / 隐私 / 缓存 / 运行产物 一律不入库
+.env
+*.env
+**/llm_config.txt
+**/config/llm_config.txt
+**/*_cookies.json
+**/icp_history.db
+**/*.db
+**/model_data/
+**/vendor/
+**/.venv/
+**/pipeline_output/
+**/outputs/
+**/logs/
+**/__pycache__/
+*.pyc
+*.log
+.pytest_cache/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>企业排查控制台</title>
+<style>
+:root {
+  --ink:#15201d; --muted:#69756f; --line:#dbe2dc; --surface:#f8faf8;
+  --paper:#ffffff; --green:#147a5a; --green-soft:#e5f4ed; --amber:#b96d00;
+  --amber-soft:#fff3d9; --red:#b42318; --red-soft:#fcedea; --blue:#2668bd;
+  --shadow:0 10px 26px rgba(21,32,29,.06);
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--surface);color:var(--ink);font:14px/1.5 "Microsoft YaHei UI","Microsoft YaHei",system-ui,sans-serif;}
+button,input,select{font:inherit;}
+.shell{max-width:1500px;margin:auto;padding:28px clamp(16px,3vw,48px) 44px;}
+.masthead{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;padding:0 0 25px;border-bottom:1px solid var(--line);}
+h1{font-size:28px;letter-spacing:-.04em;margin:0;font-weight:750;}
+.subline{color:var(--muted);margin:5px 0 0;}
+
+/* 控制栏 */
+.ctrlbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:16px;background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);margin:20px 0;}
+.status{display:flex;align-items:center;gap:8px;font-weight:650;}
+.dot{width:12px;height:12px;border-radius:50%;background:#cbd5ce;}
+.dot.run{background:var(--green);box-shadow:0 0 0 4px var(--green-soft);}
+.dot.stop{background:var(--amber);}
+.dot.err{background:var(--red);box-shadow:0 0 0 4px var(--red-soft);}
+.btn{border:1px solid #cbd5ce;background:#fff;padding:8px 16px;cursor:pointer;border-radius:4px;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.btn.primary{background:var(--green);color:#fff;border-color:var(--green);}
+.btn.danger{background:var(--red);color:#fff;border-color:var(--red);}
+.run-info{color:var(--muted);font-size:12px;}
+
+/* 告警 */
+.alert{padding:14px 16px;margin:0 0 20px;border:1px solid;border-radius:4px;display:none;}
+.alert.show{display:block;}
+.alert.warn{background:var(--amber-soft);border-color:var(--amber);color:var(--amber);}
+.alert.crit{background:var(--red-soft);border-color:var(--red);color:var(--red);}
+.alert .title{font-weight:700;margin-bottom:4px;}
+
+/* 布局 */
+.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(290px,.8fr);gap:24px;}
+section{background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);}
+.section-head{padding:18px 20px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);}
+h2{font-size:16px;margin:0;letter-spacing:-.02em;}
+.muted{color:var(--muted);}
+.metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--line);background:var(--paper);margin:20px 0;box-shadow:var(--shadow);}
+.metric{padding:17px 18px;border-right:1px solid var(--line);min-width:0;}
+.metric:last-child{border:0;}
+.metric .label{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.metric .value{font-size:29px;letter-spacing:-.04em;font-weight:750;margin-top:2px;}
+.metric .hint{font-size:12px;color:var(--muted);}
+.phase-list{padding:7px 20px 17px;}
+.phase{display:grid;grid-template-columns:150px 1fr 42px;gap:12px;align-items:center;padding:8px 0;}
+.phase-name{font:12px ui-monospace,Consolas,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bar{height:8px;overflow:hidden;background:#edf1ee;}
+.bar>i{display:block;height:100%;background:var(--green);transition:width .45s ease;}
+.phase-count{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;}
+.audit{padding:16px 20px 20px;}
+.status-line{display:flex;align-items:baseline;gap:10px;padding:7px 0;border-bottom:1px solid #edf1ee;}
+.status-line:last-child{border:0;}
+.number{margin-left:auto;font-weight:750;font-variant-numeric:tabular-nums;}
+.tag{display:inline-flex;align-items:center;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:650;}
+.ok{background:var(--green-soft);color:var(--green);} .warn{background:var(--amber-soft);color:var(--amber);} .bad{background:var(--red-soft);color:var(--red);} .info{background:#eaf1ff;color:var(--blue);}
+.companies{margin-top:24px;}
+.toolbar{padding:14px 20px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;border-bottom:1px solid var(--line);}
+.toolbar input{flex:1 1 220px;border:1px solid #cbd5ce;background:#fff;padding:8px 10px;outline-color:var(--green);}
+.toolbar select,.toolbar button{border:1px solid #cbd5ce;background:#fff;padding:8px 10px;color:var(--ink);cursor:pointer;}
+.result-count{margin-left:auto;color:var(--muted);font-size:12px;}
+.table-wrap{overflow:auto;}
+table{width:100%;border-collapse:collapse;min-width:970px;}
+th{background:#f3f7f4;color:#4d5a53;font-size:12px;font-weight:650;text-align:left;padding:10px 14px;white-space:nowrap;position:sticky;top:0;}
+td{border-top:1px solid #edf1ee;padding:11px 14px;vertical-align:middle;}
+tr.company-row{cursor:pointer;} tr.company-row:hover{background:#f5faf7;}
+.company-name{font-weight:650;max-width:250px;}
+.dash{color:#abb5af;}
+.pagination{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line);}
+.pagination button{border:1px solid #cbd5ce;background:#fff;padding:5px 10px;cursor:pointer;} .pagination button:disabled{opacity:.4;cursor:default;}
+.event-list{padding:3px 20px 10px;max-height:410px;overflow:auto;}
+.event{padding:12px 0;border-bottom:1px solid #edf1ee;} .event:last-child{border:0;}
+.event-top{display:flex;justify-content:space-between;gap:8px;font:12px ui-monospace,Consolas,monospace;} .event-time{color:var(--muted);white-space:nowrap;}
+.empty{color:var(--muted);padding:24px 20px;}
+
+/* 日志 */
+.log-section{margin-top:24px;}
+.log-panel{background:#0f1410;color:#e8f0e8;font:12px/1.6 ui-monospace,Consolas,monospace;padding:14px 16px;max-height:360px;overflow:auto;white-space:pre-wrap;word-break:break-all;}
+.log-line{margin:1px 0;}
+
+/* 弹窗 */
+dialog{width:min(900px,calc(100vw - 28px));max-height:min(760px,calc(100vh - 28px));border:0;padding:0;box-shadow:0 24px 80px rgba(0,0,0,.25);} dialog::backdrop{background:rgba(19,30,26,.45);}
+.dialog-head{position:sticky;top:0;background:var(--paper);z-index:1;padding:18px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);}
+.dialog-head h2{padding-right:20px;} .close{background:none;border:0;font-size:24px;line-height:1;cursor:pointer;color:var(--muted);}
+.detail{padding:18px 20px 26px;} .detail-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);margin-bottom:22px;} .detail-stat{padding:12px;border-right:1px solid var(--line);} .detail-stat:last-child{border:0;}
+h3{margin:20px 0 9px;font-size:13px;} .files{margin:0;padding:0;list-style:none;max-height:350px;overflow:auto;border-top:1px solid var(--line);} .files li{display:grid;grid-template-columns:94px 1fr;gap:10px;padding:9px 0;border-bottom:1px solid #edf1ee;} .files a{color:var(--blue);overflow-wrap:anywhere;text-decoration:none;} .files a:hover{text-decoration:underline;}
+.tabs{display:flex;gap:2px;padding:0 20px;border-bottom:1px solid var(--line);background:var(--paper);} .tab{border:0;background:none;padding:10px 14px;cursor:pointer;color:var(--muted);font-size:13px;border-bottom:2px solid transparent;margin-bottom:-1px;} .tab.active{color:var(--ink);border-bottom-color:var(--green);font-weight:650;} .tab:hover{color:var(--ink);}
+.phase-list-compact{display:grid;gap:8px;} .phase-card{border:1px solid var(--line);padding:12px;border-radius:4px;cursor:pointer;} .phase-card:hover{background:var(--surface);} .phase-card-title{display:flex;justify-content:space-between;align-items:center;font-weight:650;margin-bottom:6px;} .phase-card small{color:var(--muted);} .phase-detail{margin-top:10px;padding-top:10px;border-top:1px solid #edf1ee;font:12px/1.6 ui-monospace,Consolas,monospace;white-space:pre-wrap;word-break:break-all;max-height:300px;overflow:auto;}
+
+/* 复跑企业选择弹窗 */
+.replay-toolbar{padding:14px 20px;display:flex;gap:12px;align-items:center;border-bottom:1px solid var(--line);}
+.replay-toolbar input{flex:1 1 220px;border:1px solid #cbd5ce;background:#fff;padding:8px 10px;outline-color:var(--green);}
+.replay-toolbar label{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;white-space:nowrap;}
+.replay-list{padding:8px 20px;max-height:420px;overflow:auto;}
+.replay-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #edf1ee;cursor:pointer;}
+.replay-item:hover{background:#f5faf7;}
+.replay-item input{cursor:pointer;}
+.replay-actions{padding:14px 20px;display:flex;justify-content:flex-end;border-top:1px solid var(--line);}
+
+@media (max-width:900px){.metrics{grid-template-columns:repeat(3,1fr);} .metric:nth-child(3){border-right:0;} .metric:nth-child(n+4){border-top:1px solid var(--line);} .layout{grid-template-columns:1fr;} .freshness{text-align:left;} .masthead{align-items:flex-start;flex-direction:column;} .ctrlbar{flex-direction:column;align-items:flex-start;}}
+@media (max-width:560px){.shell{padding:18px 12px 30px;} .metrics{grid-template-columns:repeat(2,1fr);} .metric:nth-child(2n){border-right:0;} .metric:nth-child(n+3){border-top:1px solid var(--line);} .phase{grid-template-columns:112px 1fr 34px;gap:8px;} .result-count{width:100%;margin-left:0;}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <header class="masthead">
+    <div><h1>企业排查控制台</h1><p class="subline">黄金企业网络载体风险排查 · 可视化控制与实时监控</p></div>
+  </header>
+
+  <div class="ctrlbar">
+    <div class="status"><span class="dot" id="status-dot"></span><span id="status-text">检测中...</span></div>
+    <button class="btn primary" id="btn-start">开始排查</button>
+    <button class="btn danger" id="btn-stop" disabled>停止排查</button>
+    <button class="btn" id="btn-replay">复跑排查</button>
+    <div class="run-info" id="run-info"></div>
+  </div>
+
+  <div class="alert warn" id="alert-warn"><div class="title">提示</div><span id="alert-warn-text"></span></div>
+  <div class="alert crit" id="alert-crit"><div class="title">严重错误，请联系科技部修复</div><span id="alert-crit-text"></span></div>
+
+  <section class="metrics" id="metrics"></section>
+
+  <section class="companies">
+    <div class="section-head"><h2>企业排查进度</h2><span class="muted">点击企业查看过程文件</span></div>
+    <div class="toolbar"><input id="search" placeholder="搜索企业、风险词或域名…" autocomplete="off"><select id="status-filter"><option value="">全部</option><option value="CLOSED">已完成</option></select><select id="risk-filter"><option value="">全部风险结论</option><option value="risk">有风险或涉及风险关键词</option></select><select id="page-size"><option value="10">每页 10 家</option><option value="20" selected>每页 20 家</option><option value="50">每页 50 家</option></select><span class="result-count" id="result-count"></span></div>
+    <div class="table-wrap"><table><thead><tr><th>企业</th><th>状态</th><th>当前阶段</th><th>风险词</th><th>风险结论</th></tr></thead><tbody id="company-body"></tbody></table></div>
+    <div class="pagination"><button id="prev">上一页</button><span id="page-label"></span><button id="next">下一页</button></div>
+  </section>
+
+  <section class="log-section">
+    <div class="section-head"><h2>实时日志</h2><span class="muted" id="log-status">等待启动...</span></div>
+    <div class="log-panel" id="log-panel"></div>
+  </section>
+
+</main>
+
+<dialog id="detail-dialog"><div class="dialog-head"><div><h2 id="detail-name"></h2><p class="subline" id="detail-note"></p></div><button class="close" id="close-dialog" aria-label="关闭">×</button></div><div class="tabs" id="detail-tabs"><button class="tab active" data-tab="overview">概览</button><button class="tab" data-tab="icp">ICP</button><button class="tab" data-tab="website">官网</button><button class="tab" data-tab="social">社媒</button><button class="tab" data-tab="risk">风险</button></div><div class="detail" id="detail-content"></div></dialog>
+
+<dialog id="replay-dialog"><div class="dialog-head"><div><h2>选择复跑企业</h2><p class="subline">从已排查企业中筛选并写入 replay_companies.txt</p></div><button class="close" id="close-replay-dialog" aria-label="关闭">×</button></div>
+  <div class="replay-toolbar"><input id="replay-search" placeholder="搜索企业…" autocomplete="off"><label><input type="checkbox" id="replay-select-all"> 全选</label><span class="result-count" id="replay-count"></span></div>
+  <div class="replay-list" id="replay-list"></div>
+  <div class="replay-actions"><button class="btn primary" id="btn-replay-confirm">开始复跑</button></div>
+</dialog>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
