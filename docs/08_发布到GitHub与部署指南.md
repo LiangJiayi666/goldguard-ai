@@ -72,17 +72,14 @@ git push -u origin main
 公网 URL 已就绪：<https://liangjiayi666.github.io/goldguard-ai/>
 
 - Pages 构建源已设为 **gh-pages 分支**（仓库 Settings → Pages → Deploy from a branch → `gh-pages` / `(root)`）；
-- `site/` 是静态站点；`.github/workflows/pages.yml` 在 `site/` 更新时自动推送到 `gh-pages` 分支；
+- `site/` 是静态站点，发布到 `gh-pages` 分支后由 GitHub 自动构建；
+- 一键发布脚本：`python 01_可运行Web产品_离线演示/tools/publish_pages.py`；
 - 静态版用 `ui/mock-api.js` 在浏览器内模拟 `/api/*`，“开始排查 / 人工复核 / AI 证据链”均可操作。
 
-更新线上内容的流程：
+更新线上内容：
 
 ```bash
-cd 01_可运行Web产品_离线演示
-python tools/build_static_site.py     # 重新生成 ../site/
-node tests/test_mock_api.cjs          # 校验静态垫片
-cd ..
-git add -A && git commit -m "更新静态站点" && git push
+python 01_可运行Web产品_离线演示/tools/publish_pages.py
 ```
 
 ---

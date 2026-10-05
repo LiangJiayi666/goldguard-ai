@@ -41,8 +41,7 @@ GoldGuard_AI_Native_笔试提交/
 │   ├── tools/build_static_site.py    # 构建纯静态版（供 GitHub Pages）
 │   ├── tests/smoke_test.py           # 主链路/数据缺失/降级/合规 冒烟测试
 │   └── README.md
-├── site/                             # 由 build_static_site.py 生成的静态站点（GitHub Pages 发布）
-├── .github/workflows/pages.yml       # 推送 main 后自动部署 site/ 到 GitHub Pages
+├── site/                             # 由 build_static_site.py 生成的静态站点（已发布到 gh-pages 分支）
 ├── 02_原版源码_完整工程/              # ★原版完整源码（脱敏）
 │   ├── README_原版安装与使用.md
 │   ├── 安装使用指南.pdf

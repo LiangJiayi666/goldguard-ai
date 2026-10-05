@@ -31,7 +31,7 @@ docker run -p 8000:8000 goldguard-demo
 公网 URL：<https://liangjiayi666.github.io/goldguard-ai/>
 
 - Pages 构建源已设为 **gh-pages 分支**（Settings → Pages → Deploy from a branch → `gh-pages` / `(root)`）；
-- `.github/workflows/pages.yml` 会把 `site/` 自动发布到 `gh-pages`；
+- 一键发布：`python 01_可运行Web产品_离线演示/tools/publish_pages.py`（构建 site/ 并推送到 gh-pages）；
 - 静态版由 `01_可运行Web产品_离线演示/tools/build_static_site.py` 生成，`ui/mock-api.js` 在浏览器内
   把 `/api/*` 路由到预生成数据，行为与本地服务版一致（“开始排查/复核/证据链”可操作）。
 
