@@ -67,7 +67,23 @@ git push -u origin main
 
 ---
 
-## 第 4 步（可选但推荐）：部署成公网 URL
+## 第 3.5 步（最省事）：用 GitHub Pages 发布静态版，零额外账号
+
+仓库里已经带了纯静态版（`site/`）和一个自动部署工作流（`.github/workflows/pages.yml`）。你只需开启一次：
+
+1. 打开仓库 **Settings → Pages**；
+2. **Build and deployment → Source** 选 **GitHub Actions**（不要选 Deploy from a branch）；
+3. 回到 **Actions** 标签页，找到 “Deploy GoldGuard static demo to GitHub Pages”，点 **Run workflow**（或随便 push 一次触发）；
+4. 等 1 分钟，访问：<https://liangjiayi666.github.io/goldguard-ai/> 。
+
+这就是可提交的公网 Web 产品 URL。静态版用 `ui/mock-api.js` 在浏览器内模拟 `/api/*`，
+“开始排查 / 人工复核 / AI 证据链”均可操作。
+
+> 重新生成静态版：`cd 01_可运行Web产品_离线演示 && python tools/build_static_site.py && node tests/test_mock_api.cjs`
+
+---
+
+## 第 4 步（可选）：用 Render 部署带后端的版本
 
 因为产品零依赖、只监听端口，用 **Render 免费档**最省事：
 

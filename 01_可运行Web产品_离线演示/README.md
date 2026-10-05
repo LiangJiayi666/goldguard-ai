@@ -30,6 +30,17 @@ web/
 └── tests/smoke_test.py # 主链路/数据缺失/降级/合规边界 冒烟测试
 ```
 
+## 静态版（GitHub Pages）
+
+同一套界面还提供**纯静态版**，由 GitHub Pages 发布，无需 Python：
+
+```bash
+python tools/build_static_site.py     # 生成 ../site/
+node tests/test_mock_api.cjs          # 校验静态垫片（12 项）
+```
+
+静态版用 `ui/mock-api.js` 在浏览器内把 `/api/*` 路由到预生成数据，行为与本地服务版一致。
+
 ## 体验路径（主链路）
 
 1. 打开首页 → 风险驾驶舱（指标、企业清单、实时日志）；

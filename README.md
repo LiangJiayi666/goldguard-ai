@@ -17,6 +17,7 @@
 | 给公网 URL | 见 `docs/06_部署与公网URL说明.md`（Docker 一行命令，或 Render/Railway 免费部署） |
 | 看产品设计 / AI 记录 / 测试 / 合规 | `docs/` 目录，或 `00_提交说明.md` |
 | 看源码仓库 | GitHub：<https://github.com/LiangJiayi666/goldguard-ai> |
+| 在线体验（静态版） | <https://liangjiayi666.github.io/goldguard-ai/>（首次需在仓库 Settings → Pages 将 Source 设为 GitHub Actions，见 `docs/08`） |
 
 > 本包同时提供**两份东西**：
 > 1. **`01_可运行Web产品_离线演示/`（“阉割版”/ 离线演示）**：评委 30 秒内可操作、可复现的 Web 产品；
@@ -35,10 +36,13 @@ GoldGuard_AI_Native_笔试提交/
 ├── Dockerfile                        # 公网部署用
 ├── 01_可运行Web产品_离线演示/         # ★可运行 Web 产品（零依赖，构造/脱敏数据）
 │   ├── run.py                        # 仅标准库的 HTTP 服务 + 看板 API + 运行模拟
-│   ├── ui/                           # 风险驾驶舱 + AI 证据链 + 产品说明页
+│   ├── ui/                           # 风险驾驶舱 + AI 证据链 + 产品说明页 + 静态垫片
 │   ├── data/fixtures.json            # 8 家示例企业的构造/脱敏数据
+│   ├── tools/build_static_site.py    # 构建纯静态版（供 GitHub Pages）
 │   ├── tests/smoke_test.py           # 主链路/数据缺失/降级/合规 冒烟测试
 │   └── README.md
+├── site/                             # 由 build_static_site.py 生成的静态站点（GitHub Pages 发布）
+├── .github/workflows/pages.yml       # 推送 main 后自动部署 site/ 到 GitHub Pages
 ├── 02_原版源码_完整工程/              # ★原版完整源码（脱敏）
 │   ├── README_原版安装与使用.md
 │   ├── 安装使用指南.pdf

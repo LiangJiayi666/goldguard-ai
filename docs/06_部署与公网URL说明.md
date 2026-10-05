@@ -26,7 +26,20 @@ docker run -p 8000:8000 goldguard-demo
 # 打开 http://localhost:8000
 ```
 
-## 三、免费公网部署（推荐给阅卷的真实 URL）
+## 三、GitHub Pages 静态版（零额外账号，推荐）
+
+仓库已自带纯静态版（`site/`）与自动部署工作流（`.github/workflows/pages.yml`）。开启步骤：
+
+1. GitHub 仓库 **Settings → Pages → Build and deployment → Source** 选 **GitHub Actions**；
+2. **Actions** 标签页 → “Deploy GoldGuard static demo to GitHub Pages” → **Run workflow**（push 也会触发）；
+3. 完成后访问 <https://liangjiayi666.github.io/goldguard-ai/> 。
+
+静态版由 `01_可运行Web产品_离线演示/tools/build_static_site.py` 生成，`ui/mock-api.js` 在浏览器内
+把 `/api/*` 路由到预生成数据，行为与本地服务版一致（“开始排查/复核/证据链”可操作）。
+
+---
+
+## 四、Render 容器部署（可选，带真实后端）
 
 因应用无外部依赖、只监听端口，适合任何容器平台：
 
